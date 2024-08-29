@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Form Buah</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+<h1 th:text="${formTitle}" class="text-2xl font-bold text-center mb-6 text-gray-800">Form Buah</h1>
+<!--<form th:action="@{/buah/save}" th:object="${buah}" method="post">-->
+<input id="id-buah" type="hidden"/>
+<div class="mb-4">
+  <label for="nama" class="block text-lg font-medium text-gray-700">Nama Buah:</label>
+  <input type="text" id="nama" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+</div>
+<div>
+  <button onclick="sendData()" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Simpan</button>
+</div>
+<!--</form>-->
+<br/>
+<a href="/buah/list" class="text-indigo-600 hover:underline">Kembali ke Daftar Buah</a>
+<script>
+  window.onload = function() {
+    console.log("blabla");
+    const url = new URL(window.location.href);
+
+    // Get the last path segment
+    const pathSegments = url.pathname.split('/').filter(segment => segment);
+    const id = pathSegments[pathSegments.length-1];
+    fetch("http://localhost:8080/buah/" + id).then(response => {
+      return response.json()
+    }).then(data => {
+      document.getElementById("nama").value = data.nama;
+      document.getElementById("id-buah").value = data.id;
+    });
+  };
+
+  function sendData() {
+    const buahId = document.getElementById("id-buah").value;
+    const buahNama = document.getElementById("nama").value;
+
+    fetch("http://localhost:8080/buah/" + buahId, {
+      method: "put",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+      //make sure to serialize your JSON body
+      body: JSON.stringify({
+        nama: buahNama
+      })
+    })
+            .then((response) => {
+              // Handle response
+            });
+  }
+</script>
+</body>
+</html>

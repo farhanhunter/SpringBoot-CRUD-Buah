@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Daftar Buah</title>
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-4">Daftar Buah</h1>
+    <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+        <thead class="bg-gray-800 text-white">
+        <tr>
+            <th class="py-2 px-4 border-b">ID</th>
+            <th class="py-2 px-4 border-b">Nama</th>
+            <th class="py-2 px-4 border-b">Aksi</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="buah : ${buahList}" class="hover:bg-gray-50">
+            <td class="py-2 px-4 border-b" th:text="${buah.id}">ID</td>
+            <td class="py-2 px-4 border-b" th:text="${buah.nama}">Nama Buah</td>
+            <td class="py-2 px-4 border-b">
+                <a th:href="@{/buah/edit/{id}(id=${buah.id})}" class="text-blue-500 hover:underline">Edit</a>
+                <a href="#" th:onclick="'deleteBuah(' + ${buah.id} + '); return false;'" class="text-red-500 hover:underline ml-4">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/buah/add" class="mt-4 inline-block px-6 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-lg">Tambah Buah Baru</a>
+</div>
+
+<script>
+    function deleteBuah(id) {
+        if (confirm("Are you sure you want to delete this item?")) {
+            fetch("http://localhost:8080/buah/" + id, {
+                method: "DELETE",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Item deleted successfully!");
+                        window.location.reload();
+                    } else {
+                        alert("Failed to delete the item.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while deleting the item.");
+                });
+        }
+    }
+</script>
+</body>
+</html>
